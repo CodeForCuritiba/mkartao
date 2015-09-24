@@ -7,9 +7,9 @@ Configure seu db com o MongoDB, popule a collections `pontos` com o seguinte tip
 
 ```json
 {
-    nome : "Título do Marker no mapa",
-    lat : -12,
-    lon : -49
+    "nome" : "Título do Marker no mapa",
+    "lat" : -12,
+    "lon" : -49
 }
 ```
 
