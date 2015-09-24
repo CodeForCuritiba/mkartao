@@ -7,3 +7,9 @@
 meteor-platform
 autopublish
 insecure
+dburles:google-maps
+twbs:bootstrap
+jquery
+underscore
+less
+iron:router
