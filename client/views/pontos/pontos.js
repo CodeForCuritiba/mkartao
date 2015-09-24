@@ -24,6 +24,7 @@ Template.pontos.helpers({
 
 // Quando o template for criado
 Template.pontos.onCreated(function() {
+    Meteor.subscribe("pontos");
 
     // quando o mapa estiver criado
     GoogleMaps.ready('pontos', function(map) {
