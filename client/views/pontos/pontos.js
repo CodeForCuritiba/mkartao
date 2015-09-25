@@ -31,25 +31,30 @@ Template.pontos.onCreated(function() {
         var pontos = Pontos.find().fetch();
         var markers = {};
 
+        var addPontos = function(doc){
+            console.log(doc);
+            var lat = stringToFloat(doc.lat);
+            var lon = stringToFloat(doc.lon);
+
+            var marker = new google.maps.Marker({
+                animation : google.maps.Animation.DROP,
+                position : new google.maps.LatLng(lat, lon),
+                title : doc.nome,
+                map : map.instance,
+                id : doc._id
+            });
+
+            // @TODO Pode-se fazer o que quiser com o marker nesse ponto
+
+            markers[doc._id] = marker;
+        }
+
+        //pontos.forEach(addPontos);
+
         // Observa mudanças nos pontos (reativamente)
         Pontos.find().observe({
             // Quando um ponto é adicionado
-            added : function(doc){
-                var lat = stringToFloat(doc.lat);
-                var lon = stringToFloat(doc.lon);
-
-                var marker = new google.maps.Marker({
-                    animation : google.maps.Animation.DROP,
-                    position : new google.maps.LatLng(lat, lon),
-                    title : doc.nome,
-                    map : map.instance,
-                    id : doc._id
-                });
-
-                // @TODO Pode-se fazer o que quiser com o marker nesse ponto
-
-                markers[doc._id] = marker;
-            },
+            added : addPontos,
             // Quando for alterado
             changed : function(newDoc, oldDoc){
                 markers[newDoc._id].setPosition({ lat : stringToFloat(newDoc.lat), lng : stringToFloat(newDoc.lon) });
