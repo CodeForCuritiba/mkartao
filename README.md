@@ -9,4 +9,5 @@ Para fazer deploy no heroku você pode seguir o tutorial de [como fazer deploy n
 ## Desenvolvedores
 
 [Neri Junior](http://github.com/nerijunior/)
+
 [Thierry Delbart](http://github.com/thithi32/)
