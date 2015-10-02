@@ -1,3 +1,18 @@
 <template name="pontos">
-    {{> googleMap name="pontos" options=mapOptions}}
+
+	{{> sidebar }}
+
+    <section id="map">
+        <div class="logo">
+        	<img src="img/kartao.png" title="Kartão" alt="Kartão" width="150px"/>
+        </div>
+
+		{{> googleMap name="pontos" options=mapOptions}}
+
+        <div class="title">
+            <h1>Mapa dos lugares aonde comprar ou recarregar seu cartão transporte da URBS</h1>
+            <h2>Cartão Transporte de Curitiba</h2>
+        </div>
+    </section>
+
 </template>

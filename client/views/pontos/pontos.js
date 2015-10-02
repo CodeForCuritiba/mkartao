@@ -32,7 +32,6 @@ Template.pontos.onCreated(function() {
         var markers = {};
 
         var addPontos = function(doc){
-            console.log(doc);
             var lat = stringToFloat(doc.lat);
             var lon = stringToFloat(doc.lon);
 
