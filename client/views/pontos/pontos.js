@@ -16,7 +16,31 @@ Template.pontos.helpers({
             return {
                 // Centro de Curitiba
                 center: new google.maps.LatLng(-25.4451518, -49.2874026),
-                zoom: 12
+		        zoom: 11,
+		        mapTypeId: google.maps.MapTypeId.ROADMAP,
+		        panControl: false,
+		        scaleControl: false,
+		        scrollwheel: false,
+		        mapTypeControlOptions: {
+		            style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+		            position: google.maps.ControlPosition.BOTTOM_RIGHT
+		        },
+		        styles: [
+				    {
+				        featureType: "poi",
+				        elementType: "labels",
+				        stylers: [
+				        { visibility: "off" }
+				        ]
+				    },
+				    {
+				        featureType: "landscape.man_made",
+				        elementType: "labels",
+				        stylers: [
+				        { visibility: "off" }
+				        ]
+				    }
+				],
             };
         }
     }
