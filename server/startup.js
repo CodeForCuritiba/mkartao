@@ -2,7 +2,15 @@ Meteor.startup(function () {
     // code to run on server at startup
 
 	if (!Pontos.findOne()) {
-	        Pontos.insert({nome: "Rodoferroviária", lon: -49.256569, lat: -25.437040});
+        Pontos.insert(
+        	{
+        		name: "Rodoferroviária", 
+        		lon: -49.256569, 
+        		lat: -25.437040, 
+        		address: "Av. Presidente Affonso Camargo, 330", 
+        		openhours: "dias úteis das 8h30 às 17h"
+        	}
+        );
 	}
 
 });
