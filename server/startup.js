@@ -23,12 +23,16 @@ Meteor.startup(function () {
 			    			str = poi.POI_NAME.split(' - ');
 			    			if (str.length == 1) str = poi.POI_NAME.split('- ');
 			    			
+			    			name = str.shift().trim();
+			    			if (type == 'posto') str.push(poi.POI_DESC.trim());
+			    			desc =  str.join('<br />');
+			    			
 			    			doc = {
-						    		name: str.shift().trim(),
+						    		name: name,
 						    		type: type, 
 						    		lon: poi.POI_LON.replace(',','.'), 
 						    		lat: poi.POI_LAT.replace(',','.'), 
-						    		address: str.join('<br />') 
+						    		address: desc 
 						    };
 						    Pontos.insert(doc);
 						    console.log('Inserting Ponto: '+doc.name);

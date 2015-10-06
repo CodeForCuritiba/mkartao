@@ -97,7 +97,7 @@ Template.pontos.onCreated(function() {
 		   content = '<div id="content"><h3>' + doc.name + '</h3><p>' + doc.address;
 		
 		    link = 'http://maps.google.com/maps?dirflg=w&daddr=' + lat + ',' + lng;
-		    link = '<br><a class="link-map" target="map" href="' + link + '">Como ir?</a>';
+		    link = '</p><p><a class="link-map" target="map" href="' + link + '">Como ir?</a></p>';
 		
 		    if (doc.openhours) content = content + '<br/>Aberto ' + doc.openhours;
 		    content = content + link + '</p>' + '</div>';
