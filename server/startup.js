@@ -8,10 +8,11 @@ Meteor.startup(function () {
 		    if (!error) {
 		    	if (result.content) {
 		    		Pontos.remove({});
-		    		
+		    	
 			    	pois = JSON.parse(result.content);
 			    	var vendas = ["BANCA DE REVISTA - CARTÃO TRANSPORTE","TERMINAL DE TRANSPORTE - CARTÃO TRANSPORTE","ESTAÇÃO TUBO - CARTÃO TRANSPORTE"];
 			    	var postos = ["RUA DA CIDADANIA - CARTÃO TRANSPORTE","POSTOS DE ATENDIMENTO URBS - CARTÃO TRANSPORTE"];
+			    	
 			    	pois.forEach(function(poi) {
 			    		
 			    		var type = false;
@@ -30,14 +31,21 @@ Meteor.startup(function () {
 						    		address: str.join('<br />') 
 						    };
 						    Pontos.insert(doc);
+						    console.log('Inserting Ponto: '+doc.name);
 			    		}
 		
 			    	});
+			    } else {
+			    	console.log("Error: no content found in URBS webservice");
 			    }
 		    	
+		    } else {
+		    	console.log("Error: URBS webservice unavailable");
 		    }
 		  }
 		);
+	} else {
+		console.log('Error: URBS_KEY not defined');
 	}
 		
 
