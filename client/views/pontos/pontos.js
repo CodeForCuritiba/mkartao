@@ -90,7 +90,7 @@ Template.pontos.onCreated(function() {
                 title : doc.name,
                 map : map.instance,
                 id : doc._id,
-                icon: icons['venda'],
+                icon: icons[doc.type],
             });
 
 

@@ -1,17 +1,42 @@
 Meteor.startup(function () {
     // code to run on server at startup
+    
+//    Pontos.remove({});
 
-	if (!Pontos.findOne()) {
-        Pontos.insert(
-        	{
-        		name: "Rodoferroviária", 
-        		lon: -49.256569, 
-        		lat: -25.437040, 
-        		address: "Av. Presidente Affonso Camargo, 330", 
-        		openhours: "dias úteis das 8h30 às 17h"
-        	}
-        );
-	}
+	HTTP.get("http://transporteservico.urbs.curitiba.pr.gov.br/getPois.php?c=4768a",
+	  {},
+	  function (error, result) {
+	    if (!error) {
+	    	pois = JSON.parse(result.content);
+	    	var vendas = ["BANCA DE REVISTA - CARTÃO TRANSPORTE","TERMINAL DE TRANSPORTE - CARTÃO TRANSPORTE","ESTAÇÃO TUBO - CARTÃO TRANSPORTE"]
+	    	var postos = ["RUA DA CIDADANIA - CARTÃO TRANSPORTE","POSTOS DE ATENDIMENTO URBS - CARTÃO TRANSPORTE"]
+	    	pois.forEach(function(poi) {
+	    		
+	    		var type = false;
+	    		if (vendas.indexOf(poi.POI_CATEGORY_NAME) > -1) type = 'venda';
+	    		if (postos.indexOf(poi.POI_CATEGORY_NAME) > -1) type = 'posto';
+	    		
+	    		if (type) {
+	    			str = poi.POI_NAME.split(' - ');
+	    			
+	    			doc = {
+				    		name: str.shift(),
+				    		type: type, 
+				    		lon: poi.POI_LON.replace(',','.'), 
+				    		lat: poi.POI_LAT.replace(',','.'), 
+				    		address: str.join('<br />') 
+				    };
+				    Pontos.insert(doc);
+	    		}
+
+	    	});
+	    	
+	    }
+	  }
+	);
+		
+		
+		
 
 });
 
