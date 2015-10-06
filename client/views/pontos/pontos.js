@@ -64,7 +64,8 @@ Template.pontos.onCreated(function() {
     GoogleMaps.ready('pontos', function(map) {
 		var icons = {
 			'venda': new google.maps.MarkerImage('img/venda.png', null, null, null, new google.maps.Size(28*.8,55*.8)),
-			'posto': new google.maps.MarkerImage('img/posto.png', null, null, null, new google.maps.Size(34*.7,49*.7))
+			'posto': new google.maps.MarkerImage('img/posto.png', null, null, null, new google.maps.Size(34*.7,49*.7)),
+			'you'  : new google.maps.MarkerImage('img/you.png', null, null, null, new google.maps.Size(33*.8,33*.8))
 		};
         var pontos = Pontos.find().fetch();
         var markers = {};
@@ -74,49 +75,51 @@ Template.pontos.onCreated(function() {
 	      position: new google.maps.LatLng(latLng.lat, latLng.lng),
           title : "Você esta aqui",
 	      map: map.instance,
-          icon: 'img/you.png',
+          icon: icons['you'],
 	    });
+	    
+	    var windowopen;
     
         var addPontos = function(doc){
             var lat = stringToFloat(doc.lat);
-            var lon = stringToFloat(doc.lon);
+            var lng = stringToFloat(doc.lon);
 
             var marker = new google.maps.Marker({
                 animation : google.maps.Animation.DROP,
-                position : new google.maps.LatLng(lat, lon),
+                position : new google.maps.LatLng(lat, lng),
                 title : doc.name,
                 map : map.instance,
                 id : doc._id,
                 icon: icons['venda'],
             });
 
-            markers[doc._id] = marker;
 
-		   /* content = '<div id="content"><h3>' + doc.name + '</h3><p>' + doc.address;
+		   content = '<div id="content"><h3>' + doc.name + '</h3><p>' + doc.address;
 		
 		    link = 'http://maps.google.com/maps?dirflg=w&daddr=' + lat + ',' + lng;
 		    link = '<br><a class="link-map" target="map" href="' + link + '">Como ir?</a>';
 		
 		    if (doc.openhours) content = content + '<br/>Aberto ' + doc.openhours;
-		    content = content + link + '</p>' + '</div>';*/
-		   content = doc.name;
+		    content = content + link + '</p>' + '</div>';
+		   
 		
 		    var infowindow = new google.maps.InfoWindow({
 		        content:  content
 		    });
-		
+
 		    google.maps.event.addListener(infowindow, 'domready', function() {
 		        $('.link-map').each(function() {
-		            this.href = this.href + '&saddr=' + myLatlng.lat() + ',' + myLatlng.lng();
+		            this.href = this.href + '&saddr=' + latLng.lat + ',' + latLng.lng;
 		        });
 		    });
 		
-			var windowopen;
-		    google.maps.event.addListener(markers[doc._id], 'click', function() {
+		    google.maps.event.addListener(marker, 'click', function() {
 		        if (windowopen) windowopen.close();
-		        infowindow.open(map,marker);
+		        infowindow.open(map.instance,marker);
 		        windowopen = infowindow;
 		    });
+
+            markers[doc._id] = marker;
         }
 
         //pontos.forEach(addPontos);
@@ -136,6 +139,9 @@ Template.pontos.onCreated(function() {
                 delete markers[oldDoc._id];
             }
         });
+        
+        map.instance.addListener('click', function() { if (windowopen) windowopen.close(); });
+
 
     });
 });

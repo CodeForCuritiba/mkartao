@@ -1,5 +1,4 @@
 function closeSideBar(e) {
-	console.log('ddd');
     $("#menu-close").click();
 }
 
@@ -11,7 +10,6 @@ Template.sidebar.rendered = function () {
     // Closes the sidebar menu
     $("#menu-close").click(function(e) {
         e.preventDefault();
-        console.log('ppp');
         $("#sidebar-wrapper").removeClass("active");
     });
 
