@@ -18,9 +18,10 @@ Meteor.startup(function () {
 			    		
 			    		if (type) {
 			    			str = poi.POI_NAME.split(' - ');
+			    			if (str.length == 1) str = poi.POI_NAME.split('- ');
 			    			
 			    			doc = {
-						    		name: str.shift(),
+						    		name: str.shift().trim(),
 						    		type: type, 
 						    		lon: poi.POI_LON.replace(',','.'), 
 						    		lat: poi.POI_LAT.replace(',','.'), 
