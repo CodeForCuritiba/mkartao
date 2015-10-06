@@ -7,6 +7,8 @@ Meteor.startup(function () {
 		  function (error, result) {
 		    if (!error) {
 		    	if (result.content) {
+		    		Pontos.remove({});
+		    		
 			    	pois = JSON.parse(result.content);
 			    	var vendas = ["BANCA DE REVISTA - CARTÃO TRANSPORTE","TERMINAL DE TRANSPORTE - CARTÃO TRANSPORTE","ESTAÇÃO TUBO - CARTÃO TRANSPORTE"];
 			    	var postos = ["RUA DA CIDADANIA - CARTÃO TRANSPORTE","POSTOS DE ATENDIMENTO URBS - CARTÃO TRANSPORTE"];
