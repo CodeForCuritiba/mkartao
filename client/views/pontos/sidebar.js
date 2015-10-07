@@ -2,7 +2,7 @@ function closeSideBar(e) {
     $("#menu-close").click();
 }
 
-GoogleMaps.ready('pontos', function(map) {
+GoogleMaps.ready('map', function(map) {
 	map.instance.addListener('click', closeSideBar);
 });
 

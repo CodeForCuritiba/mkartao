@@ -7,13 +7,17 @@ var stringToFloat = function(str){
 }
 
 var latLng;
+var timr;
 var ZOOM = 14;
 
+var syncVeiculos = function() {
+	if (linha = location.search.substr(1)) {
+		Meteor.call('traceVeiculos',linha);
+		timr = setTimeout(syncVeiculos,10000);
+	}
+}
+
 Template.pontos.helpers({
-    // Envia pontos para o layout "main"
-    pontos: function() {
-        return Pontos.find().fetch()
-    },
 	geolocationError: function() {
 	    var error = Geolocation.error();
 		latLng = { 'lat': -25.431138, 'lng': -49.271788 };
@@ -59,13 +63,15 @@ Template.pontos.helpers({
 // Quando o template for criado
 Template.pontos.onCreated(function() {
     Meteor.subscribe("pontos");
+    Meteor.subscribe("veiculos");
 
     // quando o mapa estiver criado
-    GoogleMaps.ready('pontos', function(map) {
+    GoogleMaps.ready('map', function(map) {
 		var icons = {
 			'venda': new google.maps.MarkerImage('img/venda.png', null, null, null, new google.maps.Size(28*.8,55*.8)),
 			'posto': new google.maps.MarkerImage('img/posto.png', null, null, null, new google.maps.Size(34*.7,49*.7)),
-			'you'  : new google.maps.MarkerImage('img/you.png', null, null, null, new google.maps.Size(33*.8,33*.8))
+			'you'  : new google.maps.MarkerImage('img/you.png', null, null, null, new google.maps.Size(33*.8,33*.8)),
+			'veiculo' : new google.maps.MarkerImage('img/veiculo.png', null, null, null, new google.maps.Size(50*.5,69*.5))
 		};
         var pontos = Pontos.find().fetch();
         var markers = {};
@@ -122,15 +128,50 @@ Template.pontos.onCreated(function() {
             markers[doc._id] = marker;
         }
 
-        //pontos.forEach(addPontos);
+        var addVeiculos = function(doc){
+            var lat = stringToFloat(doc.lat);
+            var lng = stringToFloat(doc.lon);
 
+            var marker = new google.maps.Marker({
+                animation : google.maps.Animation.DROP,
+                position : new google.maps.LatLng(lat, lng),
+                title : doc.prefix,
+                map : map.instance,
+                id : doc._id,
+                icon: icons['veiculo'],
+            });
+
+			d = new Date();
+			arr = d.toLocaleTimeString().split(':');
+			now = parseInt(arr[0])*3600+parseInt(arr[1])*60+parseInt(arr[2]);
+			
+			arr = doc.last_update.split(':');
+			then = parseInt(arr[0])*3600+parseInt(arr[1])*60+parseInt(arr[2]);
+
+			diff = now - then;
+			if (diff < 0) diff = diff + 24*3600;
+				
+		    content = 'Há '+ Math.floor(diff / 60) +"'"+ (diff % 60);
+		   
+		    var infowindow = new google.maps.InfoWindow({
+		        content:  content
+		    });
+
+		    google.maps.event.addListener(marker, 'click', function() {
+		        if (windowopen) windowopen.close();
+		        infowindow.open(map.instance,marker);
+		        windowopen = infowindow;
+		    });
+
+            markers[doc._id] = marker;
+        }
         // Observa mudanças nos pontos (reativamente)
         Pontos.find().observe({
             // Quando um ponto é adicionado
             added : addPontos,
             // Quando for alterado
             changed : function(newDoc, oldDoc){
-                markers[newDoc._id].setPosition({ lat : stringToFloat(newDoc.lat), lng : stringToFloat(newDoc.lon) });
+                markers[newDoc._id].setPosition(new google.maps.LatLng(stringToFloat(newDoc.lat),stringToFloat(newDoc.lon)));
             },
             // Quando um ponto é removido
             removed : function(oldDoc){
@@ -139,9 +180,30 @@ Template.pontos.onCreated(function() {
                 delete markers[oldDoc._id];
             }
         });
-        
-        map.instance.addListener('click', function() { if (windowopen) windowopen.close(); });
 
+        // Observa mudanças nos vehiculos (reativamente)
+        if (linha = location.search.substr(1)) {
+	        Veiculos.find({line: linha}).observe({
+	            // Quando um ponto é adicionado
+	            added : addVeiculos,
+	            // Quando for alterado
+	            changed : function(newDoc, oldDoc){
+                markers[newDoc._id].setPosition(new google.maps.LatLng(stringToFloat(newDoc.lat),stringToFloat(newDoc.lon)));
+	            },
+	            // Quando um ponto é removido
+	            removed : function(oldDoc){
+	                markers[oldDoc._id].setMap(null);
+	                google.maps.event.clearInstanceListeners(markers[oldDoc._id]);
+	                delete markers[oldDoc._id];
+	            }
+	        });
+	    }
+        
+        map.instance.addListener('click', function() { 
+			if (windowopen) windowopen.close(); 
+		});
+		
+		timr =  setTimeout(syncVeiculos,500);
 
     });
 });

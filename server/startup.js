@@ -1,12 +1,13 @@
 Meteor.methods({
    resetear: function() {
+   		Veiculos.remove({});
 
 		if (process.env.URBS_KEY) {
 			HTTP.get("http://transporteservico.urbs.curitiba.pr.gov.br/getPois.php?c=" + process.env.URBS_KEY,
 			  {},
 			  function (error, result) {
 			    if (!error) {
-			    	if (result.content) {
+			    	if ((result.statusCode == 200) && result.content) {
 			    		Pontos.remove({});
 			    	
 				    	pois = JSON.parse(result.content);
@@ -51,15 +52,55 @@ Meteor.methods({
 		} else {
 			console.log('Error: URBS_KEY not defined');
 		}
+   },
+			
+   traceVeiculos: function(linha) {
+		if (process.env.URBS_KEY) {
+			console.log('Tracing line: ' + linha);
+ 
+ 			var t = Date.now();
+			HTTP.get("http://transporteservico.urbs.curitiba.pr.gov.br/getVeiculosLinha.php?linha=" + linha + "&c=" + process.env.URBS_KEY,
+			  {},
+			  function (error, result) {
+			  	console.log('Response received in '+Math.floor((Date.now()-t)/1000)+'s');
+			    if (!error) {
+			    	if ((result.statusCode == 200) && result.content) {
+			    		veiculos = JSON.parse(result.content);
+			    		veiculos.forEach(function(veiculo) {
+			    			doc = {
+						    		prefix: veiculo.PREFIXO,
+						    		line: veiculo.LINHA, 
+						    		lon: veiculo.LON.replace(',','.'), 
+						    		lat: veiculo.LAT.replace(',','.'), 
+						    		last_update: veiculo.HORA
+						    };
+
+						    if (found = Veiculos.findOne({prefix: doc.prefix, line: doc.line})) {
+						    	if (doc.last_update != found.last_update) {
+							    	Veiculos.update(found,doc);
+								    console.log('Modifying Vehiculo: '+doc.prefix+' ('+doc.line+') - '+doc.last_update);
+						    	}
+					    	} else {
+							    Veiculos.insert(doc);
+							    console.log('Inserting Vehiculo: '+doc.prefix+' ('+doc.line+') - '+doc.last_update);
+						    }
+			    		});
+			    		
+			    	}
+			    }
+			  }
+			);
+
+		} else {
+			console.log('Error: URBS_KEY not defined');
+		}
 
    }
 });
 
 Meteor.startup(function () {
     // code to run on server at startup
-    
 		Meteor.call("resetear");
-
 });
 
 /*
