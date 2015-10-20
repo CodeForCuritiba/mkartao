@@ -20,6 +20,9 @@ Meteor.methods({
 				    		if (vendas.indexOf(poi.POI_CATEGORY_NAME) > -1) type = 'venda';
 				    		if (postos.indexOf(poi.POI_CATEGORY_NAME) > -1) type = 'posto';
 				    		
+				    		/* Hack for Keridas presents */
+				    		if (poi.POI_NAME.indexOf("Kerida Presents") > -1 ) type = 'venda';
+				    		
 				    		if (type) {
 				    			str = poi.POI_NAME.split(' - ');
 				    			if (str.length == 1) str = poi.POI_NAME.split('- ');
@@ -51,7 +54,7 @@ Meteor.methods({
 			);
 		} else {
 			console.log('Error: URBS_KEY not defined');
-		}
+		} 
    },
 			
    traceVeiculos: function(linha) {

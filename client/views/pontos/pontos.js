@@ -4,7 +4,7 @@ var stringToFloat = function(str){
         return parseFloat( str.replace(/,/ig, '.') );
 
     return str;
-}
+};
 
 var latLng;
 var timr;
@@ -15,7 +15,7 @@ var syncVeiculos = function() {
 		Meteor.call('traceVeiculos',linha);
 		timr = setTimeout(syncVeiculos,10000);
 	}
-}
+};
 
 Template.pontos.helpers({
 	geolocationError: function() {
