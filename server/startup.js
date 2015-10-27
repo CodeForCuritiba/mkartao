@@ -62,6 +62,7 @@ Meteor.methods({
 			console.log('Tracing line: ' + linha);
  
  			var t = Date.now();
+ 			console.log("http://transporteservico.urbs.curitiba.pr.gov.br/getVeiculosLinha.php?linha=" + linha + "&c=" + process.env.URBS_KEY);
 			HTTP.get("http://transporteservico.urbs.curitiba.pr.gov.br/getVeiculosLinha.php?linha=" + linha + "&c=" + process.env.URBS_KEY,
 			  {},
 			  function (error, result) {
