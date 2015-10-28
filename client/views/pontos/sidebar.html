@@ -52,6 +52,15 @@
                 </tbody>
             </table>
 
+        {{#if currentUser}}
+            <label for="selectVeiculo">Onde está meu ônibus? </label>
+            <select id="selectVeiculo">
+            {{#each veiculos }}
+                <option value="{{ value }}">{{ label }}</option>
+            {{/each}}
+            </select>
+        {{/if}}
+
         </div>
 
         <div class="footer">

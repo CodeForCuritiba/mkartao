@@ -11,49 +11,49 @@ var timr;
 var ZOOM = 14;
 
 var syncVeiculos = function() {
-	if (linha = location.search.substr(1)) {
-		Meteor.call('traceVeiculos',linha);
-		timr = setTimeout(syncVeiculos,10000);
-	}
+    if (linha = location.search.substr(1)) {
+        Meteor.call('traceVeiculos', linha);
+        timr = setTimeout(syncVeiculos,10000);
+    }
 };
 
 Template.pontos.helpers({
-	geolocationError: function() {
-	    var error = Geolocation.error();
-		latLng = { 'lat': -25.431138, 'lng': -49.271788 };
-		ZOOM = 11;
-	    return error && error.message;
-	},
+    geolocationError: function() {
+        var error = Geolocation.error();
+        latLng = { 'lat': -25.431138, 'lng': -49.271788 };
+        ZOOM = 11;
+        return error && error.message;
+    },
     mapOptions: function() {
-		latLng = Geolocation.latLng();
+        latLng = Geolocation.latLng();
         if (GoogleMaps.loaded() && latLng) {
             return {
                 center: new google.maps.LatLng(latLng.lat, latLng.lng),
-		        zoom: ZOOM,
-		        mapTypeId: google.maps.MapTypeId.ROADMAP,
-		        panControl: false,
-		        scaleControl: false,
-		        scrollwheel: false,
-		        mapTypeControlOptions: {
-		            style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-		            position: google.maps.ControlPosition.BOTTOM_RIGHT
-		        },
-		        styles: [
-				    {
-				        featureType: "poi",
-				        elementType: "labels",
-				        stylers: [
-				        { visibility: "off" }
-				        ]
-				    },
-				    {
-				        featureType: "landscape.man_made",
-				        elementType: "labels",
-				        stylers: [
-				        { visibility: "off" }
-				        ]
-				    }
-				],
+                zoom: ZOOM,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                panControl: false,
+                scaleControl: false,
+                scrollwheel: false,
+                mapTypeControlOptions: {
+                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                    position: google.maps.ControlPosition.BOTTOM_RIGHT
+                },
+                styles: [
+                    {
+                        featureType: "poi",
+                        elementType: "labels",
+                        stylers: [
+                        { visibility: "off" }
+                        ]
+                    },
+                    {
+                        featureType: "landscape.man_made",
+                        elementType: "labels",
+                        stylers: [
+                        { visibility: "off" }
+                        ]
+                    }
+                ],
             };
         }
     }
@@ -67,25 +67,25 @@ Template.pontos.onCreated(function() {
 
     // quando o mapa estiver criado
     GoogleMaps.ready('map', function(map) {
-		var icons = {
-			'venda': new google.maps.MarkerImage('img/venda.png', null, null, null, new google.maps.Size(28*.8,55*.8)),
-			'posto': new google.maps.MarkerImage('img/posto.png', null, null, null, new google.maps.Size(34*.7,49*.7)),
-			'you'  : new google.maps.MarkerImage('img/you.png', null, null, null, new google.maps.Size(33*.8,33*.8)),
-			'veiculo' : new google.maps.MarkerImage('img/veiculo.png', null, null, null, new google.maps.Size(50*.5,69*.5))
-		};
+        var icons = {
+            'venda': new google.maps.MarkerImage('img/venda.png', null, null, null, new google.maps.Size(28*.8,55*.8)),
+            'posto': new google.maps.MarkerImage('img/posto.png', null, null, null, new google.maps.Size(34*.7,49*.7)),
+            'you'  : new google.maps.MarkerImage('img/you.png', null, null, null, new google.maps.Size(33*.8,33*.8)),
+            'veiculo' : new google.maps.MarkerImage('img/veiculo.png', null, null, null, new google.maps.Size(50*.5,69*.5))
+        };
         var pontos = Pontos.find().fetch();
         var markers = {};
 
-	    var latLng = Geolocation.latLng();
-	    var marker = new google.maps.Marker({
-	      position: new google.maps.LatLng(latLng.lat, latLng.lng),
+        var latLng = Geolocation.latLng();
+        var marker = new google.maps.Marker({
+          position: new google.maps.LatLng(latLng.lat, latLng.lng),
           title : "Você esta aqui",
-	      map: map.instance,
+          map: map.instance,
           icon: icons['you'],
-	    });
-	    
-	    var windowopen;
-    
+        });
+
+        var windowopen;
+
         var addPontos = function(doc){
             var lat = stringToFloat(doc.lat);
             var lng = stringToFloat(doc.lon);
@@ -100,30 +100,30 @@ Template.pontos.onCreated(function() {
             });
 
 
-		   content = '<div id="content"><h3>' + doc.name + '</h3><p>' + doc.address;
-		
-		    link = 'http://maps.google.com/maps?dirflg=w&daddr=' + lat + ',' + lng;
-		    link = '</p><p><a class="link-map" target="map" href="' + link + '">Como ir?</a></p>';
-		
-		    if (doc.openhours) content = content + '<br/>Aberto ' + doc.openhours;
-		    content = content + link + '</p>' + '</div>';
-		   
-		
-		    var infowindow = new google.maps.InfoWindow({
-		        content:  content
-		    });
+           content = '<div id="content"><h3>' + doc.name + '</h3><p>' + doc.address;
 
-		    google.maps.event.addListener(infowindow, 'domready', function() {
-		        $('.link-map').each(function() {
-		            this.href = this.href + '&saddr=' + latLng.lat + ',' + latLng.lng;
-		        });
-		    });
-		
-		    google.maps.event.addListener(marker, 'click', function() {
-		        if (windowopen) windowopen.close();
-		        infowindow.open(map.instance,marker);
-		        windowopen = infowindow;
-		    });
+            link = 'http://maps.google.com/maps?dirflg=w&daddr=' + lat + ',' + lng;
+            link = '</p><p><a class="link-map" target="map" href="' + link + '">Como ir?</a></p>';
+
+            if (doc.openhours) content = content + '<br/>Aberto ' + doc.openhours;
+            content = content + link + '</p>' + '</div>';
+
+
+            var infowindow = new google.maps.InfoWindow({
+                content:  content
+            });
+
+            google.maps.event.addListener(infowindow, 'domready', function() {
+                $('.link-map').each(function() {
+                    this.href = this.href + '&saddr=' + latLng.lat + ',' + latLng.lng;
+                });
+            });
+
+            google.maps.event.addListener(marker, 'click', function() {
+                if (windowopen) windowopen.close();
+                infowindow.open(map.instance,marker);
+                windowopen = infowindow;
+            });
 
             markers[doc._id] = marker;
         }
@@ -141,27 +141,27 @@ Template.pontos.onCreated(function() {
                 icon: icons['veiculo'],
             });
 
-			d = new Date();
-			arr = d.toLocaleTimeString().split(':');
-			now = parseInt(arr[0])*3600+parseInt(arr[1])*60+parseInt(arr[2]);
-			
-			arr = doc.last_update.split(':');
-			then = parseInt(arr[0])*3600+parseInt(arr[1])*60+parseInt(arr[2]);
+            d = new Date();
+            arr = d.toLocaleTimeString().split(':');
+            now = parseInt(arr[0])*3600+parseInt(arr[1])*60+parseInt(arr[2]);
 
-			diff = now - then;
-			if (diff < 0) diff = diff + 24*3600;
-				
-		    content = 'Há '+ Math.floor(diff / 60) +"'"+ (diff % 60);
-		   
-		    var infowindow = new google.maps.InfoWindow({
-		        content:  content
-		    });
+            arr = doc.last_update.split(':');
+            then = parseInt(arr[0])*3600+parseInt(arr[1])*60+parseInt(arr[2]);
 
-		    google.maps.event.addListener(marker, 'click', function() {
-		        if (windowopen) windowopen.close();
-		        infowindow.open(map.instance,marker);
-		        windowopen = infowindow;
-		    });
+            diff = now - then;
+            if (diff < 0) diff = diff + 24*3600;
+
+            content = 'Há '+ Math.floor(diff / 60) +"'"+ (diff % 60);
+
+            var infowindow = new google.maps.InfoWindow({
+                content:  content
+            });
+
+            google.maps.event.addListener(marker, 'click', function() {
+                if (windowopen) windowopen.close();
+                infowindow.open(map.instance,marker);
+                windowopen = infowindow;
+            });
 
             markers[doc._id] = marker;
         }
@@ -183,27 +183,27 @@ Template.pontos.onCreated(function() {
 
         // Observa mudanças nos vehiculos (reativamente)
         if (linha = location.search.substr(1)) {
-	        Veiculos.find({line: linha}).observe({
-	            // Quando um ponto é adicionado
-	            added : addVeiculos,
-	            // Quando for alterado
-	            changed : function(newDoc, oldDoc){
+            Veiculos.find({line: linha}).observe({
+                // Quando um ponto é adicionado
+                added : addVeiculos,
+                // Quando for alterado
+                changed : function(newDoc, oldDoc){
                 markers[newDoc._id].setPosition(new google.maps.LatLng(stringToFloat(newDoc.lat),stringToFloat(newDoc.lon)));
-	            },
-	            // Quando um ponto é removido
-	            removed : function(oldDoc){
-	                markers[oldDoc._id].setMap(null);
-	                google.maps.event.clearInstanceListeners(markers[oldDoc._id]);
-	                delete markers[oldDoc._id];
-	            }
-	        });
-	    }
-        
-        map.instance.addListener('click', function() { 
-			if (windowopen) windowopen.close(); 
-		});
-		
-		timr =  setTimeout(syncVeiculos,500);
+                },
+                // Quando um ponto é removido
+                removed : function(oldDoc){
+                    markers[oldDoc._id].setMap(null);
+                    google.maps.event.clearInstanceListeners(markers[oldDoc._id]);
+                    delete markers[oldDoc._id];
+                }
+            });
+        }
+
+        map.instance.addListener('click', function() {
+            if (windowopen) windowopen.close();
+        });
+
+        timr =  setTimeout(syncVeiculos,500);
 
     });
 });

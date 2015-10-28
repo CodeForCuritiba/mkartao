@@ -15,3 +15,7 @@ meteorhacks:kadira
 fortawesome:fontawesome
 mdg:geolocation
 http
+
+# Accounts
+accounts-password
+ian:accounts-ui-bootstrap-3
