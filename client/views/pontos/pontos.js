@@ -136,7 +136,7 @@ Template.pontos.onCreated(function() {
             var marker = new google.maps.Marker({
                 animation : google.maps.Animation.DROP,
                 position : new google.maps.LatLng(lat, lng),
-                title : doc.prefix,
+                title : doc.prefixo,
                 map : map.instance,
                 id : doc._id,
                 icon: icons['veiculo'],
@@ -146,7 +146,7 @@ Template.pontos.onCreated(function() {
             arr = d.toLocaleTimeString().split(':');
             now = parseInt(arr[0])*3600+parseInt(arr[1])*60+parseInt(arr[2]);
 
-            arr = doc.last_update.split(':');
+            arr = doc.updated_at.split(':');
             then = parseInt(arr[0])*3600+parseInt(arr[1])*60+parseInt(arr[2]);
 
             diff = now - then;
@@ -184,7 +184,7 @@ Template.pontos.onCreated(function() {
 
         // Observa mudanças nos veiculos (reativamente)
         if (linha = location.search.substr(1)) {
-            Veiculos.find({line: linha}).observe({
+            Veiculos.find({ linha : linha }).observe({
                 // Quando um ponto é adicionado
                 added : addVeiculos,
                 // Quando for alterado
