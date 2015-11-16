@@ -64,6 +64,7 @@ Template.pontos.helpers({
 Template.pontos.onCreated(function() {
     Meteor.subscribe("pontos");
     Meteor.subscribe("veiculos");
+    Meteor.subscribe("linhas");
 
     // quando o mapa estiver criado
     GoogleMaps.ready('map', function(map) {
