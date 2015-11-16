@@ -1,0 +1,4 @@
+/**
+ * PontosHelper [SERVER ONLY]
+ */
+PontosHelper = {};

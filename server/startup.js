@@ -1,113 +1,148 @@
 // Listen to incoming HTTP requests, can only be used on the server
 
 Meteor.methods({
-   resetear: function() {
-   		Veiculos.remove({});
+    init: function() {
 
-		if (process.env.URBS_KEY) {
-			HTTP.get("http://transporteservico.urbs.curitiba.pr.gov.br/getPois.php?c=" + process.env.URBS_KEY,
-			  {},
-			  function (error, result) {
-			    if (!error) {
-			    	if ((result.statusCode == 200) && result.content) {
-			    		Pontos.remove({});
+        if (process.env.URBS_KEY) {
 
-				    	pois = JSON.parse(result.content);
-				    	var vendas = ["BANCA DE REVISTA - CARTÃO TRANSPORTE","TERMINAL DE TRANSPORTE - CARTÃO TRANSPORTE","ESTAÇÃO TUBO - CARTÃO TRANSPORTE"];
-				    	var postos = ["RUA DA CIDADANIA - CARTÃO TRANSPORTE","POSTOS DE ATENDIMENTO URBS - CARTÃO TRANSPORTE"];
+            // Se não existirem as linhas na base de dados, seleciona pelo webservice da URBS
+            if (Linhas.find().count() == 0) {
 
-				    	pois.forEach(function(poi) {
+                console.log('--> Inserindo Linhas a partir do WS da URBS:');
 
-				    		var type = false;
-				    		if (vendas.indexOf(poi.POI_CATEGORY_NAME) > -1) type = 'venda';
-				    		if (postos.indexOf(poi.POI_CATEGORY_NAME) > -1) type = 'posto';
+                URBS.get('/getLinhas.php', function(error, rows) {
 
-				    		/* Hack for Keridas presents */
-				    		if (poi.POI_NAME.indexOf("Kerida Presents") > -1 ) type = 'venda';
+                    if (error) {
+                        throw error.message;
+                    }
 
-				    		if (type) {
-				    			str = poi.POI_NAME.split(' - ');
-				    			if (str.length == 1) str = poi.POI_NAME.split('- ');
+                    // Cadastra todos os linhas
+                    rows.forEach(function(row) {
+                        var doc = {
+                            cod: row.COD,
+                            nome: row.NOME,
+                            somente_cartao: row.SOMENTE_CARTAO,
+                            categoria_servico: row.CATEGORIA_SERVICO
+                        };
 
-				    			name = str.shift().trim();
-				    			if (type == 'posto') str.push(poi.POI_DESC.trim());
-				    			desc =  str.join('<br />');
+                        Linhas.insert(doc);
+                    });
 
-				    			doc = {
-							    		name: name,
-							    		type: type,
-							    		lon: poi.POI_LON.replace(',','.'),
-							    		lat: poi.POI_LAT.replace(',','.'),
-							    		address: desc
-							    };
-							    Pontos.insert(doc);
-							    console.log('Inserting Ponto: '+doc.name);
-				    		}
+                    console.log(Linhas.find().count() + ' Linhas inseridas com sucesso! <-- ');
+                });
 
-				    	});
-				    } else {
-				    	console.log("Error: no content found in URBS webservice");
-				    }
+            }
 
-			    } else {
-			    	console.log("Error: URBS webservice unavailable");
-			    }
-			  }
-			);
-		} else {
-			console.log('Error: URBS_KEY not defined');
-		}
-   },
+            // Verifica se os pontos já existem no DB
+            if (Pontos.find().count() == 0) {
 
-   traceVeiculos: function(linha) {
-		if (process.env.URBS_KEY) {
-			console.log('Tracing line: ' + linha);
+                console.log('--> Inserindo Pontos a partir do WS da URBS:');
 
- 			var t = Date.now();
- 			console.log("http://transporteservico.urbs.curitiba.pr.gov.br/getVeiculosLinha.php?linha=" + linha + "&c=" + process.env.URBS_KEY);
-			HTTP.get("http://transporteservico.urbs.curitiba.pr.gov.br/getVeiculosLinha.php?linha=" + linha + "&c=" + process.env.URBS_KEY,
-			  {},
-			  function (error, result) {
-			  	console.log('Response received in '+Math.floor((Date.now()-t)/1000)+'s');
-			    if (!error) {
-			    	if ((result.statusCode == 200) && result.content) {
-			    		veiculos = JSON.parse(result.content);
-			    		veiculos.forEach(function(veiculo) {
-			    			doc = {
-						    		prefix: veiculo.PREFIXO,
-						    		line: veiculo.LINHA,
-						    		lon: veiculo.LON.replace(',','.'),
-						    		lat: veiculo.LAT.replace(',','.'),
-						    		last_update: veiculo.HORA
-						    };
+                URBS.get('/getPois.php', function(error, pois) {
+                    if (!error) {
 
-						    if (found = Veiculos.findOne({prefix: doc.prefix, line: doc.line})) {
-						    	if (doc.last_update != found.last_update) {
-							    	Veiculos.update(found,doc);
-								    console.log('Modifying Vehiculo: '+doc.prefix+' ('+doc.line+') - '+doc.last_update);
-						    	}
-					    	} else {
-							    Veiculos.insert(doc);
-							    console.log('Inserting Vehiculo: '+doc.prefix+' ('+doc.line+') - '+doc.last_update);
-						    }
-			    		});
+                        var vendas = ["BANCA DE REVISTA - CARTÃO TRANSPORTE", "TERMINAL DE TRANSPORTE - CARTÃO TRANSPORTE", "ESTAÇÃO TUBO - CARTÃO TRANSPORTE"];
+                        var postos = ["RUA DA CIDADANIA - CARTÃO TRANSPORTE", "POSTOS DE ATENDIMENTO URBS - CARTÃO TRANSPORTE"];
 
-			    	}
-			    }
-			  }
-			);
+                        pois.forEach(function(poi) {
 
-		} else {
-			console.log('Error: URBS_KEY not defined');
-		}
+                            var type = false;
+                            if (vendas.indexOf(poi.POI_CATEGORY_NAME) > -1) type = 'venda';
+                            if (postos.indexOf(poi.POI_CATEGORY_NAME) > -1) type = 'posto';
 
-   }
+                            /* Hack for Keridas presents */
+                            if (poi.POI_NAME.indexOf("Kerida Presents") > -1) type = 'venda';
+
+                            if (type) {
+                                str = poi.POI_NAME.split(' - ');
+                                if (str.length == 1) str = poi.POI_NAME.split('- ');
+
+                                name = str.shift().trim();
+                                if (type == 'posto') str.push(poi.POI_DESC.trim());
+                                desc = str.join('<br />');
+
+                                doc = {
+                                    name: name,
+                                    type: type,
+                                    lon: poi.POI_LON.replace(',', '.'),
+                                    lat: poi.POI_LAT.replace(',', '.'),
+                                    address: desc
+                                };
+
+                                Pontos.insert(doc);
+
+                                console.log('Inserting Ponto: ' + doc.name);
+                            }
+
+                        });
+
+                        console.log(Pontos.find().count() + ' Pontos inseridos com sucesso! <--');
+
+                    } else {
+                        console.log("Error: URBS webservice unavailable");
+                    }
+                });
+            }
+
+
+        } else {
+            console.log('Error: URBS_KEY not defined');
+        }
+    },
+
+    traceVeiculos: function(linha) {
+        if (process.env.URBS_KEY) {
+            console.log('Tracing line: ' + linha);
+
+            var now = Date.now();
+
+            URBS.get('/getVeiculosLinha.php?linha=' + linha, function(error, veiculos) {
+                console.log('Response received in ' + Math.floor((Date.now() - now) / 1000) + 's');
+
+                if (error) {
+                    console.log('Não foi possível obter informações do veículo');
+                }
+
+                veiculos.forEach(function(veiculo) {
+                    var doc = {
+                        prefixo: veiculo.PREFIXO,
+                        linha: veiculo.LINHA,
+                        lon: veiculo.LON.replace(',', '.'),
+                        lat: veiculo.LAT.replace(',', '.'),
+                        updated_at: veiculo.HORA
+                    };
+
+                    var found = Veiculos.findOne({
+                        prefixo: doc.prefixo,
+                        linha: doc.linha
+                    });
+
+                    if (found) {
+                        if (doc.updated_at != found.updated_at) {
+                            Veiculos.update(found, doc);
+                            console.log('Modifying Veiculo: ' + doc.prefixo + ' (' + doc.linha + ') - ' + doc.updated_at);
+                        }
+                    } else {
+                        Veiculos.insert(doc);
+                        console.log('Inserting Veiculo: ' + doc.prefixo + ' (' + doc.linha + ') - ' + doc.updated_at);
+                    }
+                });
+
+            });
+
+        } else {
+            console.log('Error: URBS_KEY not defined');
+        }
+
+    }
 });
 
+// code to run on server at startup
 Meteor.startup(function() {
-    // code to run on server at startup
-    Meteor.call("resetear");
 
+    Meteor.call("init");
+
+    // CORS
     WebApp.connectHandlers.use(function(req, res, next) {
         res.setHeader("Access-Control-Allow-Origin", "*");
         return next();

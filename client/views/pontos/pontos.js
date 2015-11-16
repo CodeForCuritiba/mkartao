@@ -181,7 +181,7 @@ Template.pontos.onCreated(function() {
             }
         });
 
-        // Observa mudanças nos vehiculos (reativamente)
+        // Observa mudanças nos veiculos (reativamente)
         if (linha = location.search.substr(1)) {
             Veiculos.find({line: linha}).observe({
                 // Quando um ponto é adicionado

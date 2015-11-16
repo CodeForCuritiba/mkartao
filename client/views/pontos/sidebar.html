@@ -2,13 +2,13 @@
 
 	<div id="fb-root"></div>
     <script>
-    (function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v2.4&appId=871255366303296";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v2.4&appId=871255366303296";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
     </script>
 
     <!-- Navigation -->
@@ -38,65 +38,68 @@
                         </td>
                         <td>
                             <p>Comprar e recarregar
-                            <br>cartões avulsos ou cartões usuários</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="image">
-                            <img src="img/posto.png"/>
-                        </td>
-                        <td>
-                            <p>Emitir seu cartão transporte usuário</p>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-        {{#if currentUser}}
-            <label for="selectVeiculo">Onde está meu ônibus? </label>
-            <select id="selectVeiculo">
-            {{#each veiculos }}
-                <option value="{{ value }}">{{ label }}</option>
-            {{/each}}
-            </select>
-        {{/if}}
-
-        </div>
-
-        <div class="footer">
-            <div class="share">
-                <div class="fb-share-button" data-href="http://kartao.com.br" data-layout="button_count"></div>
-                <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://kartao.com.br" data-text="Mapa para comprar e recarregar cartão transporte em Curitiba" data-via="KartaoCuritiba">Tweet</a>
-                <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-            </div>
-            <div class="references">
-                <table class="block_urbs">
-                    <tr>
-                        <td>
-                            Saiba mais sobre o cartão transporte
-                        </td>
-                        <td>
-                            <a href="http://www.urbs.curitiba.pr.gov.br/utilidades/cartao-transporte" target="urbs">
-                                <img src="img/urbs.png" class="img_urbs img_legend" title="URBS" alt="URBS"/>
-                            </a>
-                        </td>
-                    </tr>
+                                <br>cartões avulsos ou cartões usuários</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="image">
+                                <img src="img/posto.png"/>
+                            </td>
+                            <td>
+                                <p>Emitir seu cartão transporte usuário</p>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
-                <table class="block_cfc">
-                    <tr>
-                        <td>
-                            Com a colaboração de
-                        </td>
-                        <td>
-                            <a href="http://www.codeforamerica.org/brigade/Code-for-Curitiba" target="codeforcuritiba">
-                                <img src="img/codeforcuritiba.png" class="img_codeforcuritiba img_legend"
-                                title="Code For Curitiba" alt="Code For Curitiba"/>
-                            </a>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </nav>
 
-</template>
+                <br>
+
+                <label for="selectVeiculo">Onde está meu ônibus? </label>
+
+                <br>
+
+                <select id="selectLinha">
+                    {{#each linhas }}
+                    <option value="{{ value }}">{{ label }}</option>
+                    {{/each}}
+                </select>
+
+            </div>
+
+            <div class="footer">
+                <div class="share">
+                    <div class="fb-share-button" data-href="http://kartao.com.br" data-layout="button_count"></div>
+                    <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://kartao.com.br" data-text="Mapa para comprar e recarregar cartão transporte em Curitiba" data-via="KartaoCuritiba">Tweet</a>
+                    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+                </div>
+                <div class="references">
+                    <table class="block_urbs">
+                        <tr>
+                            <td>
+                                Saiba mais sobre o cartão transporte
+                            </td>
+                            <td>
+                                <a href="http://www.urbs.curitiba.pr.gov.br/utilidades/cartao-transporte" target="urbs">
+                                    <img src="img/urbs.png" class="img_urbs img_legend" title="URBS" alt="URBS"/>
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="block_cfc">
+                        <tr>
+                            <td>
+                                Com a colaboração de
+                            </td>
+                            <td>
+                                <a href="http://www.codeforamerica.org/brigade/Code-for-Curitiba" target="codeforcuritiba">
+                                    <img src="img/codeforcuritiba.png" class="img_codeforcuritiba img_legend"
+                                    title="Code For Curitiba" alt="Code For Curitiba"/>
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </nav>
+
+    </template>

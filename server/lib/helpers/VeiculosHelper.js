@@ -1,0 +1,4 @@
+/**
+ * VeiculosHelper [SERVER ONLY]
+ */
+VeiculosHelper = {};
