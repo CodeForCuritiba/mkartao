@@ -19,3 +19,5 @@ http
 # Accounts
 accounts-password
 ian:accounts-ui-bootstrap-3
+eskan:chosen
+lbee:moment-helpers
