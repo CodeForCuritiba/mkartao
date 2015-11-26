@@ -1,11 +1,22 @@
 // Listen to incoming HTTP requests, can only be used on the server
 
+function getTrajeto(linha) {
+    URBS.get('/getShapeLinha.php?linha='+linha.cod, function(error, trajeto) {
+    	console.log('Trajeto para linha '+linha.cod+' ok');
+    	Linhas.update(linha._id, {
+        	$set: {trajeto: trajeto }
+    	});
+	});
+}
+
+
 Meteor.methods({
     init: function() {
-
+ 
         if (process.env.URBS_KEY) {
 
             // Se não existirem as linhas na base de dados, seleciona pelo webservice da URBS
+            Linhas.remove({});
             if (Linhas.find().count() == 0) {
 
                 console.log('--> Inserindo Linhas a partir do WS da URBS:');
@@ -18,13 +29,14 @@ Meteor.methods({
 
                     // Cadastra todos os linhas
                     rows.forEach(function(row) {
+
                         var doc = {
                             cod: row.COD,
                             nome: row.NOME,
                             somente_cartao: row.SOMENTE_CARTAO,
                             categoria_servico: row.CATEGORIA_SERVICO
                         };
-
+                        
                         Linhas.insert(doc);
 
                         // Seleciona pontos da linha
@@ -92,14 +104,17 @@ Meteor.methods({
             console.log('Error: URBS_KEY not defined');
         }
     },
-
-    traceVeiculos: function(linha) {
+    
+    traceVeiculos: function(linha_cod) {
         if (process.env.URBS_KEY) {
-            console.log('Tracing line: ' + linha);
+            console.log('Tracing line: ' + linha_cod);
+
+	    	linha = Linhas.findOne({cod : linha_cod});
+	    	if (!linha.trajeto) getTrajeto(linha);
 
             var now = Date.now();
 
-            URBS.get('/getVeiculosLinha.php?linha=' + linha, function(error, veiculos) {
+            URBS.get('/getVeiculosLinha.php?linha=' + linha_cod, function(error, veiculos) {
                 console.log('Response received in ' + Math.floor((Date.now() - now) / 1000) + 's');
 
                 if (error) {

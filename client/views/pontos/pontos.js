@@ -1,9 +1,6 @@
 // Alguns pontos da urbs estão com ',' e em String, essa função converte eles para float
 var stringToFloat = function(str){
-    if (typeof str == "String")
-        return parseFloat( str.replace(/,/ig, '.') );
-
-    return str;
+    return parseFloat( str.replace(',', '.') );
 };
 
 var syncVeiculos = function() {
@@ -36,7 +33,7 @@ Template.pontos.helpers({
         latLng = Geolocation.latLng();
         if (GoogleMaps.loaded() && latLng) {
             return {
-                center: new google.maps.LatLng(latLng.lat, latLng.lng),
+				center: new google.maps.LatLng(latLng.lat, latLng.lng),
                 zoom: ZOOM,
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
                 panControl: false,
@@ -102,8 +99,27 @@ Template.pontos.onCreated(function() {
         var markers = {};
 
         var latLng = Geolocation.latLng();
+
+    	var geocoder = new google.maps.Geocoder();
+		loc = new google.maps.LatLng(latLng.lat, latLng.lng);
+
+		geocoder.geocode({ 'latLng': loc  }, function(results, status) {
+	    	var found = 0;
+		    if (status == google.maps.GeocoderStatus.OK) {
+		    	results[1].address_components.forEach(function(component) {
+		    		if (component.long_name == "Curitiba") found = 1;
+		    	});
+		    }
+
+	    	if (!found) {
+	    		map.instance.setCenter(new google.maps.LatLng( -25.431138, -49.271788 ));
+	    		map.instance.setZoom(12);
+	    	}
+
+		});
+
         var marker = new google.maps.Marker({
-          position: new google.maps.LatLng(latLng.lat, latLng.lng),
+          position: loc,
           title : "Você esta aqui",
           map: map.instance,
           icon: icons['you'],
@@ -111,7 +127,7 @@ Template.pontos.onCreated(function() {
 
         var windowopen;
 
-        var addPois = function(doc){
+        var addPois = function(doc){i
             var lat = stringToFloat(doc.lat);
             var lng = stringToFloat(doc.lon);
 
@@ -123,7 +139,6 @@ Template.pontos.onCreated(function() {
                 id : doc._id,
                 icon: icons[doc.type],
             });
-
 
            content = '<div id="content"><h3>' + doc.name + '</h3><p>' + doc.address;
 
@@ -151,7 +166,7 @@ Template.pontos.onCreated(function() {
             });
 
             markers[doc._id] = marker;
-        }
+        };
 
         var addVeiculos = function(doc){
             var lat = stringToFloat(doc.lat);
@@ -187,7 +202,28 @@ Template.pontos.onCreated(function() {
             });
 
             markers[doc._id] = marker;
-        }
+        };
+
+        var drawTrajeto = function(trajeto) {
+            arr = [];
+            trajeto.forEach(function(p) {
+	            lat = stringToFloat(p.LAT);
+	            lng = stringToFloat(p.LON);
+            	arr.push({lat: lat, lng: lng});
+            });
+            console.log(arr);
+
+            var path = new google.maps.Polyline({
+			    path: arr,
+			    geodesic: true,
+			    strokeColor: '#FF0000',
+			    strokeOpacity: 1.0,
+			    strokeWeight: 2
+			  });
+
+			path.setMap(map.instance);
+        };
+
         // Observa mudanças nos pontos (reativamente)
         Pois.find().observe({
             // Quando um ponto é adicionado
@@ -205,8 +241,8 @@ Template.pontos.onCreated(function() {
         });
 
         // Observa mudanças nos veiculos (reativamente)
-        if (linha = location.search.substr(1)) {
-            Veiculos.find({ linha : linha }).observe({
+        if (cod = location.search.substr(1)) {
+            Veiculos.find({ linha : cod }).observe({
                 // Quando um ponto é adicionado
                 added : addVeiculos,
                 // Quando for alterado
@@ -220,6 +256,23 @@ Template.pontos.onCreated(function() {
                     delete markers[oldDoc._id];
                 }
             });
+
+			l = Linhas.findOne({ cod : cod });
+			if (l.trajeto) {
+				drawTrajeto(l.trajeto);
+			}
+
+            Linhas.find({ cod : cod }).observe({
+                // Quando for alterado
+                changed : function(newDoc, oldDoc){
+                	console.log('New trajeto');
+					if (newDoc.trajeto) {
+						drawTrajeto(newDoc.trajeto);
+					}
+                },
+            });
+
+	        syncVeiculos();
         }
 
         map.instance.addListener('click', function() {
