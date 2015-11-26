@@ -95,6 +95,7 @@ Template.pontos.onCreated(function() {
         var markers = {};
 
         var latLng = Geolocation.latLng();
+		var bounds;
 
     	var geocoder = new google.maps.Geocoder();
 		loc = new google.maps.LatLng(latLng.lat, latLng.lng);
@@ -108,8 +109,12 @@ Template.pontos.onCreated(function() {
 		    }
 		    	
 	    	if (!found) {
-	    		map.instance.setCenter(new google.maps.LatLng( -25.431138, -49.271788 ));
-	    		map.instance.setZoom(12);
+	    		if(bounds) {
+	    			map.instance.fitBounds(bounds);
+	    		} else {
+		    		map.instance.setCenter(new google.maps.LatLng( -25.431138, -49.271788 ));
+		    		map.instance.setZoom(12);
+	    		}
 	    	}
 
 		});
@@ -203,13 +208,14 @@ Template.pontos.onCreated(function() {
         };
         
         var drawTrajeto = function(trajeto) {
-            arr = [];
+            var arr = [];
+            bounds = new google.maps.LatLngBounds();
             trajeto.forEach(function(p) {
 	            lat = stringToFloat(p.LAT);
 	            lng = stringToFloat(p.LON);
             	arr.push({lat: lat, lng: lng});
+            	bounds.extend(new google.maps.LatLng(lat,lng));
             });
-            console.log(arr);
             
             var path = new google.maps.Polyline({
 			    path: arr,
@@ -220,6 +226,7 @@ Template.pontos.onCreated(function() {
 			  });
 			
 			path.setMap(map.instance);
+			
         };
         
         // Observa mudanças nos pontos (reativamente)
