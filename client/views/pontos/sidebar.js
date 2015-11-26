@@ -9,7 +9,7 @@ GoogleMaps.ready('map', function(map) {
 // Template:
 Template.sidebar.helpers({
     linhas: function () {
-        return Linhas.find().map(function(obj){
+        return Linhas.find({}, { sort : { nome : 1 } }).map(function(obj){
             return {
                 label : obj.nome,
                 value : obj.cod,

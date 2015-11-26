@@ -186,27 +186,9 @@ Template.pontos.onCreated(function() {
                 icon: icons['veiculo'],
             });
 
-            d = new Date();
-            arr = d.toLocaleTimeString().split(':');
-            now = parseInt(arr[0])*3600+parseInt(arr[1])*60+parseInt(arr[2]);
-
-            arr = doc.updated_at.split(':');
-            then = parseInt(arr[0])*3600+parseInt(arr[1])*60+parseInt(arr[2]);
-
-            diff = now - then;
-            if (diff < 0) diff = diff + 24*3600;
-
-            content = 'Há '+ Math.floor(diff / 60) +"'"+ (diff % 60);
-
-            google.maps.event.addListener(marker, 'click', function() {
-                var modal = doc;
-                var linha = Linhas.find({ cod : doc.linha }).fetch()[0];
-                console.log(_.extend(modal, linha));
-                Session.set('modal', _.extend(modal, linha));
-                $('#veiculoModal').modal();
-            });
-
             markers[doc._id] = marker;
+
+            attachInfowindow(markers[doc._id],doc);
         };
 
         var drawTrajeto = function(trajeto) {
@@ -218,7 +200,7 @@ Template.pontos.onCreated(function() {
             	arr.push({lat: lat, lng: lng});
             	bounds.extend(new google.maps.LatLng(lat,lng));
             });
-            
+
             var path = new google.maps.Polyline({
 			    path: arr,
 			    geodesic: true,
@@ -228,7 +210,32 @@ Template.pontos.onCreated(function() {
 			  });
 
 			path.setMap(map.instance);
+  			map.instance.fitBounds(bounds);
+        };
 
+        var attachInfowindow = function (marker,doc) {
+        	console.log(doc);
+            d = new Date();
+            arr = d.toLocaleTimeString().split(':');
+            now = parseInt(arr[0])*3600+parseInt(arr[1])*60+parseInt(arr[2]);
+
+            arr = doc.updated_at.split(':');
+            then = parseInt(arr[0])*3600+parseInt(arr[1])*60+parseInt(arr[2]);
+
+            diff = now - then;
+            if (diff < 0) diff = diff + 24*3600;
+
+            content = 'Posição as '+doc.updated_at; //'Há '+ Math.floor(diff / 60) +"'"+ (diff % 60);
+
+            var infowindow = new google.maps.InfoWindow({
+                content:  content
+            });
+
+            google.maps.event.addListener(marker, 'click', function() {
+                if (windowopen) windowopen.close();
+                infowindow.open(map.instance,marker);
+                windowopen = infowindow;
+            });
         };
 
         // Observa mudanças nos pontos (reativamente)
@@ -254,7 +261,8 @@ Template.pontos.onCreated(function() {
                 added : addVeiculos,
                 // Quando for alterado
                 changed : function(newDoc, oldDoc){
-                markers[newDoc._id].setPosition(new google.maps.LatLng(stringToFloat(newDoc.lat),stringToFloat(newDoc.lon)));
+                	markers[newDoc._id].setPosition(new google.maps.LatLng(stringToFloat(newDoc.lat),stringToFloat(newDoc.lon)));
+                	attachInfowindow(markers[newDoc._id],newDoc);
                 },
                 // Quando um ponto é removido
                 removed : function(oldDoc){
@@ -272,7 +280,6 @@ Template.pontos.onCreated(function() {
             Linhas.find({ cod : cod }).observe({
                 // Quando for alterado
                 changed : function(newDoc, oldDoc){
-                	console.log('New trajeto');
 					if (newDoc.trajeto) {
 						drawTrajeto(newDoc.trajeto);
 					}
