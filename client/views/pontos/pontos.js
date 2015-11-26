@@ -226,7 +226,7 @@ Template.pontos.onCreated(function() {
 			  });
 			
 			path.setMap(map.instance);
-			
+  			map.instance.fitBounds(bounds);
         };
         
         // Observa mudanças nos pontos (reativamente)
@@ -270,7 +270,6 @@ Template.pontos.onCreated(function() {
             Linhas.find({ cod : cod }).observe({
                 // Quando for alterado
                 changed : function(newDoc, oldDoc){
-                	console.log('New trajeto');
 					if (newDoc.trajeto) {
 						drawTrajeto(newDoc.trajeto);
 					}
