@@ -3,6 +3,10 @@ var stringToFloat = function(str){
     return parseFloat( str.replace(',', '.') );
 };
 
+function chosenUpdate(){
+    $('#selectLinha').trigger("chosen:updated");
+};
+
 var latLng;
 var timr;
 var ZOOM = 14;
@@ -56,12 +60,28 @@ Template.pontos.helpers({
     }
 });
 
+Template.pontos.onRendered(function(){
+    $('#selectLinha').chosen({ width: '100%' });
+});
 
 // Quando o template for criado
 Template.pontos.onCreated(function() {
     Meteor.subscribe("pontos");
     Meteor.subscribe("veiculos");
     Meteor.subscribe("linhas");
+
+    // Atualiza chosen da linhas
+    Linhas.find().observe({
+        added : function(){
+            chosenUpdate();
+        },
+        changed : function(){
+            chosenUpdate();
+        },
+        added : function(){
+            chosenUpdate();
+        },
+    });
 
     // quando o mapa estiver criado
     GoogleMaps.ready('map', function(map) {

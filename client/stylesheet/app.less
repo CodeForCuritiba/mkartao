@@ -1,13 +1,11 @@
-html, body{
+html,
+body {
     width: 100%;
     height: 100%;
 }
-
-
 .toggle {
     margin: 5px 5px 0 0;
 }
-
 .btn-light {
     border-radius: 0;
     color: #333;
@@ -18,10 +16,8 @@ html, body{
 .gmnoprint a,
 .gmnoprint span,
 .gm-style-cc {
-    display:none;
+    display: none;
 }
-
-
 body {
     color: #fff;
     background-color: #333;
@@ -30,7 +26,6 @@ body {
     line-height: normal;
     font-size: 14px;
 }
-
 section#map {
     background-image: none;
     display: table;
@@ -42,14 +37,12 @@ section#map {
     -moz-background-size: cover;
     background-size: cover;
     -o-background-size: cover;
-
     .logo {
-      position: absolute;
-      z-index: 11;
-      top: 15px;
-      left: 15px;
+        position: absolute;
+        z-index: 11;
+        top: 15px;
+        left: 15px;
     }
-
     .map-canvas {
         position: absolute;
         height: 100%;
@@ -59,7 +52,6 @@ section#map {
         color: #000;
         z-index: 2;
     }
-  
     .title {
         position: absolute;
         top: 0;
@@ -70,27 +62,24 @@ section#map {
         z-index: 1;
         text-align: center;
         background-color: rgba(0, 0, 0, 0.5);
-  
         h1 {
             font-size: 20px;
             margin: 5px;
         }
     }
 }
-
 #menu-toggle {
     z-index: 10;
     position: fixed;
     top: 0;
     right: 0;
 }
-
 #sidebar-wrapper {
     background: white;
     border-left: 1px solid #222;
     z-index: 1000;
     position: fixed;
-    margin-right: -250px;;
+    margin-right: -250px;
     width: 30%;
     right: 0;
     height: 100%;
@@ -100,16 +89,13 @@ section#map {
     -ms-transition: all 0.4s ease 0s;
     -o-transition: all 0.4s ease 0s;
     transition: all 0.4s ease 0s;
-
     &.active {
         right: 250px;
         width: 250px;
     }
-
     a {
         color: #222;
     }
-    
     #menu-close {
         position: absolute;
         background-color: transparent;
@@ -119,7 +105,6 @@ section#map {
         margin: 0;
         color: #ccc;
     }
-
     .brand {
         padding: 0 10px 10px;
         text-align: center;
@@ -128,7 +113,6 @@ section#map {
             width: 80%;
         }
     }
-
     .content {
         border-top: 2px dashed #ccc;
         padding: 20px 10px 10px;
@@ -143,7 +127,6 @@ section#map {
             }
         }
     }
-
     .footer {
         display: none;
         position: absolute;
@@ -156,8 +139,8 @@ section#map {
             padding: 10px;
             border-top: 1px dashed #ccc;
             height: 42px;
-
-            .fb-share-button, .twitter-share-button {
+            .fb-share-button,
+            .twitter-share-button {
                 float: left;
                 margin-right: 10px;
             }
@@ -174,58 +157,55 @@ section#map {
         .block_cfc {
             display: none;
         }
-
         .img_codeforcuritiba {
             width: 100%;
             max-width: 170px;
         }
-        
         .img_urbs {
-            width: 100%; max-width: 50px;
+            width: 100%;
+            max-width: 50px;
             margin: 0 10px;
         }
-
     }
-
 }
-
 @media (min-width: 768px) {
-  
     section#map {
         width: 70%;
     }
-  
-    #sidebar-wrapper.active, #sidebar-wrapper {
+    #sidebar-wrapper.active,
+    #sidebar-wrapper {
         margin-right: 0;
         width: 30%;
         right: 0;
-      
-        #menu-close { display: none; }
-
+        #menu-close {
+            display: none;
+        }
     }
-
 }
-
-
 @media(min-width: 850px) {
-
-    #sidebar-wrapper .brand { 
+    #sidebar-wrapper .brand {
         font-size: 1.2em;
-        h2 { font-size: 30px; }
+        h2 {
+            font-size: 30px;
+        }
     }
-
 }
-
 @media(min-height: 470px) {
-    #sidebar-wrapper .footer .block_cfc { display: table; }
+    #sidebar-wrapper .footer .block_cfc {
+        display: table;
+    }
 }
-
 @media(min-height: 380px) {
-    #sidebar-wrapper .footer .references { display: block; }
+    #sidebar-wrapper .footer .references {
+        display: block;
+    }
 }
-
 @media(min-height: 310px) {
-    #sidebar-wrapper .footer { display: block; }
+    #sidebar-wrapper .footer {
+        display: block;
+    }
 }
 
-
+#selectLinha_chosen{
+    width: 200px;
+}
