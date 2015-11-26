@@ -214,7 +214,6 @@ Template.pontos.onCreated(function() {
         };
 
         var attachInfowindow = function (marker,doc) {
-        	console.log(doc);
             d = new Date();
             arr = d.toLocaleTimeString().split(':');
             now = parseInt(arr[0])*3600+parseInt(arr[1])*60+parseInt(arr[2]);
@@ -286,7 +285,6 @@ Template.pontos.onCreated(function() {
                 },
             });
 
-	        syncVeiculos();
         }
 
         map.instance.addListener('click', function() {

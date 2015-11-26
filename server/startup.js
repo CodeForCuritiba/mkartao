@@ -15,6 +15,8 @@ Meteor.methods({
  
         if (process.env.URBS_KEY) {
 
+			Veiculos.remove({});
+			
             // Se não existirem as linhas na base de dados, seleciona pelo webservice da URBS
             Linhas.remove({});
             if (Linhas.find().count() == 0) {
@@ -110,7 +112,7 @@ Meteor.methods({
             console.log('Tracing line: ' + linha_cod);
 
 	    	linha = Linhas.findOne({cod : linha_cod});
-	    	if (!linha.trajeto) getTrajeto(linha);
+	    	if (linha && !linha.trajeto) getTrajeto(linha);
 
             var now = Date.now();
 
@@ -120,31 +122,37 @@ Meteor.methods({
                 if (error) {
                     console.log('Não foi possível obter informações do veículo');
                 }
-
+                
+                var dmin = new Date( now - 5*60000);
                 veiculos.forEach(function(veiculo) {
-                    var doc = {
-                        prefixo: veiculo.PREFIXO,
-                        linha: veiculo.LINHA,
-                        lon: veiculo.LON.replace(',', '.'),
-                        lat: veiculo.LAT.replace(',', '.'),
-                        updated_at: veiculo.HORA
-                    };
-
                     var found = Veiculos.findOne({
-                        prefixo: doc.prefixo,
-                        linha: doc.linha
+                        prefixo: veiculo.PREFIXO,
+                        linha: veiculo.LINHA
                     });
 
-                    if (found) {
-                        if (doc.updated_at != found.updated_at) {
-                            Veiculos.update(found, doc);
-                            console.log('Modifying Veiculo: ' + doc.prefixo + ' (' + doc.linha + ') - ' + doc.updated_at);
-                        }
-                    } else {
-                        Veiculos.insert(doc);
-                        console.log('Inserting Veiculo: ' + doc.prefixo + ' (' + doc.linha + ') - ' + doc.updated_at);
-                    }
+                	if (veiculo.HORA > dmin.toLocaleTimeString()) {
+	                    var doc = {
+	                        prefixo: veiculo.PREFIXO,
+	                        linha: veiculo.LINHA,
+	                        lon: veiculo.LON.replace(',', '.'),
+	                        lat: veiculo.LAT.replace(',', '.'),
+	                        updated_at: veiculo.HORA
+	                    };
+	
+	                    if (found) {
+	                        if (doc.updated_at != found.updated_at) {
+	                            Veiculos.update(found, doc);
+	                            console.log('Modifying Veiculo: ' + doc.prefixo + ' (' + doc.linha + ') - ' + doc.updated_at);
+	                        }
+	                    } else {
+	                        Veiculos.insert(doc);
+	                        console.log('Inserting Veiculo: ' + doc.prefixo + ' (' + doc.linha + ') - ' + doc.updated_at);
+	                    }
+	            	}
                 });
+                
+                console.log('To remove: '+Veiculos.find({ linha: linha_cod, updated_at: {$lt: dmin.toLocaleTimeString()}}).count());
+                Veiculos.remove({ linha: linha_cod, updated_at: {$lt: dmin.toLocaleTimeString()}});
 
             });
 
