@@ -25,13 +25,13 @@
         </a>
 
         <div class="brand">
-            <img alt="Kartão" class="logo" src="img/kartao.png" title="Kartão"/>
+            <img alt="Kartão" class="logo" src="img/kartao.png" title="Kartão" />
         </div>
 
         <div class="content">
-            <button class="btn btn-info" data-toggle="modal" data-target="#veiculoModal">Modal</button>
+            <!-- <button class="btn btn-info" data-toggle="modal" data-target="#veiculoModal">Modal</button> -->
 
-			<h4>Ache fácil os lugares onde:</h4>
+            <h4>Ache fácil os lugares onde:</h4>
 
             <table>
                 <thead>
@@ -43,7 +43,7 @@
                 <tbody>
                     <tr>
                         <td class="image">
-                            <img src="img/venda.png"/>
+                            <img src="img/venda.png" />
                         </td>
                         <td>
                             <p>Comprar e recarregar
@@ -52,7 +52,7 @@
                     </tr>
                     <tr>
                         <td class="image">
-                            <img src="img/posto.png"/>
+                            <img src="img/posto.png" />
                         </td>
                         <td>
                             <p>Emitir seu cartão transporte usuário</p>
@@ -70,7 +70,7 @@
 
             <select id="selectLinha">
                 {{#each linhas }}
-                    <option value="{{ value }}">{{ label }}</option>
+                <option value="{{ value }}">{{ label }}</option>
                 {{/each}}
             </select>
 
@@ -81,12 +81,10 @@
                 <div class="fb-share-button" data-href="http://kartao.com.br" data-layout="button_count"></div>
                 <a class="twitter-share-button" data-text="Mapa para comprar e recarregar cartão transporte em Curitiba" data-url="http://kartao.com.br" data-via="KartaoCuritiba" href="https://twitter.com/share">Tweet</a>
                 <script>
-                    !function(d, s, id) {
+                    ! function(d, s, id) {
                         var js,
                             fjs = d.getElementsByTagName(s)[0],
-                            p = /^http:/.test(d.location)
-                                ? 'http'
-                                : 'https';
+                            p = /^http:/.test(d.location) ? 'http' : 'https';
                         if (!d.getElementById(id)) {
                             js = d.createElement(s);
                             js.id = id;
@@ -104,7 +102,7 @@
                         </td>
                         <td>
                             <a href="http://www.urbs.curitiba.pr.gov.br/utilidades/cartao-transporte" target="urbs">
-                                <img alt="URBS" class="img_urbs img_legend" src="img/urbs.png" title="URBS"/>
+                                <img alt="URBS" class="img_urbs img_legend" src="img/urbs.png" title="URBS" />
                             </a>
                         </td>
                     </tr>
@@ -116,7 +114,7 @@
                         </td>
                         <td>
                             <a href="http://www.codeforamerica.org/brigade/Code-for-Curitiba" target="codeforcuritiba">
-                                <img alt="Code For Curitiba" class="img_codeforcuritiba img_legend" src="img/codeforcuritiba.png" title="Code For Curitiba"/>
+                                <img alt="Code For Curitiba" class="img_codeforcuritiba img_legend" src="img/codeforcuritiba.png" title="Code For Curitiba" />
                             </a>
                         </td>
                     </tr>

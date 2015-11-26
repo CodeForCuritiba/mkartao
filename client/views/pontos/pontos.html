@@ -1,13 +1,13 @@
 <template name="pontos">
 
-	{{> sidebar }}
+    {{> sidebar }}
 
     <section id="map">
         <div class="logo">
-        	<img src="img/kartao.png" title="Kartão" alt="Kartão" width="150px"/>
+            <img src="img/kartao.png" title="Kartão" alt="Kartão" width="150px" />
         </div>
 
-		{{> googleMap name="map" options=mapOptions}}
+        {{> googleMap name="map" options=mapOptions}}
 
         <div class="title">
             <h1>Mapa dos lugares aonde comprar ou recarregar seu cartão transporte da URBS</h1>
@@ -15,34 +15,36 @@
         </div>
     </section>
 
-	<!-- FULLSCREEN MODAL CODE (.fullscreen) -->
-	<div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade fullscreen" id="veiculoModal" role="dialog" tabindex="-1">
-	    <div class="modal-dialog">
-	        <div class="modal-content" style="color:#fff;">
-	            <div class="modal-header" style="border:0;">
-	                <button aria-hidden="true" class="close btn btn-link" data-dismiss="modal" type="button">
-	                    <i class="fa fa-close fa-lg" style="color:#999;"></i>
-	                </button>
-	                <h4 class="modal-title text-center">
-	                    <span class="sr-only">main navigation</span>
-	                </h4>
-	            </div>
-	            <div class="modal-body veiculo">
-					<div class="container">
-						<img src="img/veiculo.png" alt="" />
-						<h3>{{ modal.prefixo }} <small>{{ modal.nome }}</small></h3>
-						<ul class="atributos">
-							<li>icon 1</li>
-							<li>icon 2</li>
-							<li>icon 3</li>
-						</ul>
-						<div class="ultima-atualizacao">Atualizado: {{ modal.last_update }}</div>
-					</div>
-	            </div>
-	        </div>
-	        <!-- /.modal-content -->
-	    </div>
-	    <!-- /.modal-dialog -->
-	</div>
-	<!-- /.fullscreen -->
+    <!-- FULLSCREEN MODAL CODE (.fullscreen) -->
+    <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade fullscreen" id="veiculoModal" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="color:#fff;">
+                <div class="modal-header" style="border:0;">
+                    <button aria-hidden="true" class="close btn btn-link" data-dismiss="modal" type="button">
+                        <i class="fa fa-close fa-lg" style="color:#999;"></i>
+                    </button>
+                    <h4 class="modal-title text-center">
+                        <span class="sr-only">main navigation</span>
+                    </h4>
+                </div>
+                <div class="modal-body veiculo">
+                    <div class="container">
+                        <img src="img/veiculo.png" alt="" />
+                        <h3>{{ modal.prefixo }}
+                            <small>{{ modal.nome }}</small>
+                        </h3>
+                        <ul class="atributos">
+                            <li>icon 1</li>
+                            <li>icon 2</li>
+                            <li>icon 3</li>
+                        </ul>
+                        <div class="ultima-atualizacao">Atualizado: {{ modal.last_update }}</div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.fullscreen -->
 </template>
