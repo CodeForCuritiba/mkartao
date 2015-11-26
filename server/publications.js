@@ -1,5 +1,5 @@
-Meteor.publish("pontos", function(){
-    return Pontos.find();
+Meteor.publish("pois", function(){
+    return Pois.find();
 });
 
 Meteor.publish("veiculos", function($linha_id) {

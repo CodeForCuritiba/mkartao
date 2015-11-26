@@ -26,6 +26,10 @@ Meteor.methods({
                         };
 
                         Linhas.insert(doc);
+
+                        // Seleciona pontos da linha
+                        getPontosByLinha(doc);
+
                     });
 
                     console.log(Linhas.find().count() + ' Linhas inseridas com sucesso! <-- ');
@@ -33,10 +37,10 @@ Meteor.methods({
 
             }
 
-            // Verifica se os pontos já existem no DB
-            if (Pontos.find().count() == 0) {
+            // Verifica se os pois já existem no DB
+            if (Pois.find().count() == 0) {
 
-                console.log('--> Inserindo Pontos a partir do WS da URBS:');
+                console.log('--> Inserindo Pois a partir do WS da URBS:');
 
                 URBS.get('/getPois.php', function(error, pois) {
                     if (!error) {
@@ -69,21 +73,20 @@ Meteor.methods({
                                     address: desc
                                 };
 
-                                Pontos.insert(doc);
+                                Pois.insert(doc);
 
                                 console.log('Inserting Ponto: ' + doc.name);
                             }
 
                         });
 
-                        console.log(Pontos.find().count() + ' Pontos inseridos com sucesso! <--');
+                        console.log(Pois.find().count() + ' Pois inseridos com sucesso! <--');
 
                     } else {
                         console.log("Error: URBS webservice unavailable");
                     }
                 });
             }
-
 
         } else {
             console.log('Error: URBS_KEY not defined');
@@ -148,6 +151,46 @@ Meteor.startup(function() {
         return next();
     });
 });
+
+/**
+ * Seleciona através do WebService da URBS os pontos pela linha especificada
+ * @param  Document linha Mongo cocument
+ * @return integer Count of all inserted points
+ */
+function getPontosByLinha (linha){
+    console.log('--> Inserindo Pontos da linha ' + linha.cod + ' a partir do WS da URBS:');
+    URBS.get('/getPontosLinha.php?linha=' + linha.cod, function(error, pontos) {
+
+        if (error) {
+            return console.log('Não foi possível obter informações dos pontos da linha ' + linha.cod);
+        }
+
+        pontos.forEach(function(ponto) {
+
+            var exists = Pontos.find({ num : ponto.NUM }).count();
+
+            // Verifica se o ponto já existe
+            if (exists > 0) {
+                return;
+            }
+
+            var doc = {
+                nome : ponto.NOME,
+                num : ponto.NUM,
+                lat : ponto.LAT.replace(',','.'),
+                lon : ponto.LON.replace(',','.'),
+                seq : ponto.SEQ,
+                grupo : ponto.GRUPO,
+                sentido : ponto.SENTIDO,
+                tipo : ponto.TIPO,
+            };
+
+            Pontos.insert(doc);
+        });
+
+
+    });
+}
 
 /*
     'Rodoferroviária'                   => array('Av. Presidente Affonso Camargo, 330', -25.437040, -49.256569, $postos_default_horarios),

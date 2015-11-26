@@ -6,14 +6,6 @@ var stringToFloat = function(str){
     return str;
 };
 
-function chosenUpdate(){
-    $('#selectLinha').trigger("chosen:updated");
-};
-
-var latLng;
-var timr;
-var ZOOM = 14;
-
 var syncVeiculos = function() {
     if (linha = location.search.substr(1)) {
         Meteor.call('traceVeiculos', linha);
@@ -21,12 +13,24 @@ var syncVeiculos = function() {
     }
 };
 
+function chosenUpdate(){
+    $('#selectLinha').trigger("chosen:updated");
+};
+
+var latLng;
+var timr;
+var ZOOM = 14;
+Session.setDefault("modal", {});
+
 Template.pontos.helpers({
     geolocationError: function() {
         var error = Geolocation.error();
         latLng = { 'lat': -25.431138, 'lng': -49.271788 };
         ZOOM = 11;
         return error && error.message;
+    },
+    modal : function(){
+        return Session.get('modal');
     },
     mapOptions: function() {
         latLng = Geolocation.latLng();
@@ -69,7 +73,7 @@ Template.pontos.onRendered(function(){
 
 // Quando o template for criado
 Template.pontos.onCreated(function() {
-    Meteor.subscribe("pontos");
+    Meteor.subscribe("pois");
     Meteor.subscribe("veiculos");
     Meteor.subscribe("linhas");
 
@@ -94,7 +98,7 @@ Template.pontos.onCreated(function() {
             'you'  : new google.maps.MarkerImage('img/you.png', null, null, null, new google.maps.Size(33*.8,33*.8)),
             'veiculo' : new google.maps.MarkerImage('img/veiculo.png', null, null, null, new google.maps.Size(50*.5,69*.5))
         };
-        var pontos = Pontos.find().fetch();
+        var pois = Pois.find().fetch();
         var markers = {};
 
         var latLng = Geolocation.latLng();
@@ -107,7 +111,7 @@ Template.pontos.onCreated(function() {
 
         var windowopen;
 
-        var addPontos = function(doc){
+        var addPois = function(doc){
             var lat = stringToFloat(doc.lat);
             var lng = stringToFloat(doc.lon);
 
@@ -174,22 +178,20 @@ Template.pontos.onCreated(function() {
 
             content = 'Há '+ Math.floor(diff / 60) +"'"+ (diff % 60);
 
-            var infowindow = new google.maps.InfoWindow({
-                content:  content
-            });
-
             google.maps.event.addListener(marker, 'click', function() {
-                if (windowopen) windowopen.close();
-                infowindow.open(map.instance,marker);
-                windowopen = infowindow;
+                var modal = doc;
+                var linha = Linhas.find({ cod : doc.linha }).fetch()[0];
+                console.log(_.extend(modal, linha));
+                Session.set('modal', _.extend(modal, linha));
+                $('#veiculoModal').modal();
             });
 
             markers[doc._id] = marker;
         }
         // Observa mudanças nos pontos (reativamente)
-        Pontos.find().observe({
+        Pois.find().observe({
             // Quando um ponto é adicionado
-            added : addPontos,
+            added : addPois,
             // Quando for alterado
             changed : function(newDoc, oldDoc){
                 markers[newDoc._id].setPosition(new google.maps.LatLng(stringToFloat(newDoc.lat),stringToFloat(newDoc.lon)));
