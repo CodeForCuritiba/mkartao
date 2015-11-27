@@ -194,7 +194,7 @@ console.log(new google.maps.LatLng(lat, lng));
         title: doc.prefixo,
         map: map.instance,
         id: doc._id,
-        icon: icons[veiculo],
+        icon: icons['veiculo'],
       });
 
 
