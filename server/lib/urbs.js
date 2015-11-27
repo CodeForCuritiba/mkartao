@@ -16,6 +16,8 @@ URBS = {
 
         var that = this;
 
+console.log(url);
+
         HTTP.get(url, {},
             function(error, result) {
                 if (!error) {

@@ -289,7 +289,7 @@ Template.pontos.onCreated(function() {
         // Quando for alterado
         changed: function(newDoc, oldDoc) {
           markers[newDoc._id].setPosition(new google.maps.LatLng(stringToFloat(newDoc.lat), stringToFloat(newDoc.lon)));
-          attachInfowindow(markers[newDoc._id], newDoc);
+//          attachInfowindow(markers[newDoc._id], newDoc);
         },
         // Quando um ponto é removido
         removed: function(oldDoc) {
