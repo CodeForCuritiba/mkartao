@@ -17,6 +17,8 @@ function chosenUpdate() {
 var latLng;
 var timr;
 var ZOOM = 14;
+var markers = {};
+
 Session.setDefault("modal", {});
 
 Template.pontos.helpers({
@@ -102,7 +104,6 @@ Template.pontos.onCreated(function() {
     };
 
     var pois = Pois.find().fetch();
-    var markers = {};
     var latLng = Geolocation.latLng();
     var bounds;
 
@@ -184,22 +185,14 @@ Template.pontos.onCreated(function() {
       var lat = stringToFloat(doc.lat);
       var lng = stringToFloat(doc.lon);
 
-console.log("Adding vehiculo");
-console.log(doc);
-console.log(map.instance);
-console.log(icons['venda']);
-console.log(icons.veiculo);
-
       var marker = new google.maps.Marker({
         animation: google.maps.Animation.DROP,
         position: new google.maps.LatLng(lat, lng),
         title: doc.prefixo,
         map: map.instance,
         id: doc._id,
-        icon: icons['venda'],
+        icon: icons['veiculo'],
       });
-
-console.log(marker);
 
 
       // Seleciona a tabela do Veículo no site da URBS
@@ -243,7 +236,8 @@ console.log(marker);
       });
 
       path.setMap(map.instance);
-      map.instance.fitBounds(bounds);
+      
+      if (!bounds.isEmpty()) map.instance.fitBounds(bounds);
     };
 
     var attachInfowindow = function(marker, doc) {

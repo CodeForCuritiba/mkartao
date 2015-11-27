@@ -17,7 +17,7 @@ Meteor.methods({
 
         if (process.env.URBS_KEY) {
 
-            Veiculos.remove({});
+            //Veiculos.remove({});
 
             // Se não existirem as linhas na base de dados, seleciona pelo webservice da URBS
             if (Linhas.find().count() === 0) {
@@ -125,7 +125,7 @@ Meteor.methods({
                 if (error) {
                     console.log('Não foi possível obter informações do veículo');
                 }
-console.log(veiculos);
+
                 var dmin = new Date(now - 5 * 60000);
                 veiculos.forEach(function(veiculo) {
                     var found = Veiculos.findOne({
@@ -133,7 +133,7 @@ console.log(veiculos);
                         linha: veiculo.LINHA
                     });
 
- //                   if (veiculo.HORA > dmin.toLocaleTimeString()) {
+                    if (veiculo.HORA > dmin.toLocaleTimeString()) {
                         var doc = {
                             prefixo: veiculo.PREFIXO,
                             linha: veiculo.LINHA,
@@ -152,7 +152,7 @@ console.log(veiculos);
                             Veiculos.insert(doc);
                             console.log('Inserting Veiculo: ' + doc.prefixo + ' (' + doc.linha + ') - ' + doc.updated_at);
                         }
- //                   }
+                    }
                 });
 
                 console.log('To remove: ' + Veiculos.find({
