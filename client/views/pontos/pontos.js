@@ -197,10 +197,10 @@ console.log(doc);
       });
 
       // Seleciona a tabela do Veículo no site da URBS
-      if (!doc.tabela || doc.tabela.length === 0) {
+/*      if (!doc.tabela || doc.tabela.length === 0) {
         Meteor.call("getTabelaByVeiculo", doc.prefixo);
       }
-
+*/
       google.maps.event.addListener(marker, 'click', function() {
         var linha = Linhas.find({ cod: doc.linha }, { limit: 1 }).fetch()[0];
         var modalData = _.extend(doc, linha, {});
