@@ -186,7 +186,8 @@ Template.pontos.onCreated(function() {
 
 console.log("Adding vehiculo");
 console.log(doc);
-console.log(new google.maps.LatLng(lat, lng));
+console.log(map.instance);
+console.log(icons['veiculo']);
 
       var marker = new google.maps.Marker({
         animation: google.maps.Animation.DROP,
@@ -197,6 +198,7 @@ console.log(new google.maps.LatLng(lat, lng));
         icon: icons['veiculo'],
       });
 
+console.log(marker);
 
 
       // Seleciona a tabela do Veículo no site da URBS
