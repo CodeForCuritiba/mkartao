@@ -161,12 +161,13 @@ Meteor.methods({
                         $lt: dmin.toLocaleTimeString()
                     }
                 }).count());
+/*
                 Veiculos.remove({
                     linha: linha_cod,
                     updated_at: {
                         $lt: dmin.toLocaleTimeString()
                     }
-                });
+                });*/
 
             });
 
