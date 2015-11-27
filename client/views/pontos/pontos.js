@@ -187,7 +187,8 @@ Template.pontos.onCreated(function() {
 console.log("Adding vehiculo");
 console.log(doc);
 console.log(map.instance);
-console.log(icons['veiculo']);
+console.log(icons['venda']);
+console.log(icons.veiculo);
 
       var marker = new google.maps.Marker({
         animation: google.maps.Animation.DROP,
@@ -195,7 +196,7 @@ console.log(icons['veiculo']);
         title: doc.prefixo,
         map: map.instance,
         id: doc._id,
-        icon: icons['veiculo'],
+        icon: icons['venda'],
       });
 
 console.log(marker);
