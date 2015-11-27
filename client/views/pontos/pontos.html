@@ -16,7 +16,7 @@
     </section>
 
     <!-- FULLSCREEN MODAL CODE (.fullscreen) -->
-    <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade fullscreen" id="veiculoModal" role="dialog" tabindex="-1">
+    <div aria-hidden="true" class="modal fade fullscreen" id="veiculoModal" role="dialog" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content" style="color:#fff;">
                 <div class="modal-header" style="border:0;">
@@ -33,12 +33,22 @@
                         <h3>{{ modal.prefixo }}
                             <small>{{ modal.nome }}</small>
                         </h3>
-                        <ul class="atributos">
+                        <!-- <ul class="atributos">
                             <li>icon 1</li>
                             <li>icon 2</li>
                             <li>icon 3</li>
-                        </ul>
-                        <div class="ultima-atualizacao">Atualizado: {{ modal.last_update }}</div>
+                        </ul> -->
+                        <div class="ultima-atualizacao">Atualizado: {{moFormat modal.updated_at 'HH:mm:ss' }}</div>
+
+                        <table class="table table-stripped">
+                          <tbody>
+                            {{#each modal.tabela}}
+                            <tr>
+                              <td>{{ horario }}</td>
+                            </tr>
+                            {{/each}}
+                          </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
