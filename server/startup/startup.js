@@ -125,7 +125,7 @@ Meteor.methods({
                 if (error) {
                     console.log('Não foi possível obter informações do veículo');
                 }
-
+console.log(veiculos);
                 var dmin = new Date(now - 5 * 60000);
                 veiculos.forEach(function(veiculo) {
                     var found = Veiculos.findOne({
@@ -133,7 +133,7 @@ Meteor.methods({
                         linha: veiculo.LINHA
                     });
 
-                    if (veiculo.HORA > dmin.toLocaleTimeString()) {
+ //                   if (veiculo.HORA > dmin.toLocaleTimeString()) {
                         var doc = {
                             prefixo: veiculo.PREFIXO,
                             linha: veiculo.LINHA,
@@ -141,6 +141,7 @@ Meteor.methods({
                             lat: veiculo.LAT.replace(',', '.'),
                             updated_at: veiculo.HORA
                         };
+
 
                         if (found) {
                             if (doc.updated_at != found.updated_at) {
@@ -151,7 +152,7 @@ Meteor.methods({
                             Veiculos.insert(doc);
                             console.log('Inserting Veiculo: ' + doc.prefixo + ' (' + doc.linha + ') - ' + doc.updated_at);
                         }
-                    }
+ //                   }
                 });
 
                 console.log('To remove: ' + Veiculos.find({
