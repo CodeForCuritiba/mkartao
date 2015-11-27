@@ -184,6 +184,9 @@ Template.pontos.onCreated(function() {
       var lat = stringToFloat(doc.lat);
       var lng = stringToFloat(doc.lon);
 
+console.log("Adding vehiculo");
+console.log(doc);
+
       var marker = new google.maps.Marker({
         animation: google.maps.Animation.DROP,
         position: new google.maps.LatLng(lat, lng),
