@@ -126,10 +126,10 @@ Meteor.methods({
                     console.log('Não foi possível obter informações do veículo');
                 }
 
-                console.log('call: ' + veiculos.length);
-                console.log('db: ' + Veiculos.find({}).count());
-
-                var dmin = new Date(now - 5 * 60000);
+				curitibaOffset = 120; // to change for DST
+				x = new Date();
+				console.log('offset: '+x.getTimezoneOffset());
+                var dmin = new Date(now - 5 * 60000 - (curitibaOffset-x.getTimezoneOffset()) * 60000); 
                 veiculos.forEach(function(veiculo) {
                     var found = Veiculos.findOne({
                         prefixo: veiculo.PREFIXO,
@@ -159,14 +159,13 @@ Meteor.methods({
                     }
                 });
                 
-                console.log('db2: ' + Veiculos.find({}).count());
-
                 console.log('To remove: ' + Veiculos.find({
                     linha: linha_cod,
                     updated_at: {
                         $lt: dmin.toLocaleTimeString()
                     }
                 }).count());
+                
 /*
                 Veiculos.remove({
                     linha: linha_cod,
