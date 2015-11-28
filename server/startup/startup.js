@@ -126,6 +126,9 @@ Meteor.methods({
                     console.log('Não foi possível obter informações do veículo');
                 }
 
+                console.log('call: ' + veiculos.length);
+                console.log('db: ' + Veiculos.find({}).count());
+
                 var dmin = new Date(now - 5 * 60000);
                 veiculos.forEach(function(veiculo) {
                     var found = Veiculos.findOne({
@@ -133,6 +136,7 @@ Meteor.methods({
                         linha: veiculo.LINHA
                     });
 
+                console.log(veiculo.HORA + ' > ' + dmin.toLocaleTimeString());
                     if (veiculo.HORA > dmin.toLocaleTimeString()) {
                         var doc = {
                             prefixo: veiculo.PREFIXO,
@@ -154,6 +158,8 @@ Meteor.methods({
                         }
                     }
                 });
+                
+                console.log('db2: ' + Veiculos.find({}).count());
 
                 console.log('To remove: ' + Veiculos.find({
                     linha: linha_cod,
