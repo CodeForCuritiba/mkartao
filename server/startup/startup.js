@@ -128,15 +128,14 @@ Meteor.methods({
 
 				curitibaOffset = 120; // to change for DST
 				x = new Date();
-				console.log('offset: '+x.getTimezoneOffset());
                 var dmin = new Date(now - 5 * 60000 - (curitibaOffset-x.getTimezoneOffset()) * 60000); 
+                console.log('Date min: ' + dmin.toLocaleTimeString());
                 veiculos.forEach(function(veiculo) {
                     var found = Veiculos.findOne({
                         prefixo: veiculo.PREFIXO,
                         linha: veiculo.LINHA
                     });
 
-                console.log(veiculo.HORA + ' > ' + dmin.toLocaleTimeString());
                     if (veiculo.HORA > dmin.toLocaleTimeString()) {
                         var doc = {
                             prefixo: veiculo.PREFIXO,
@@ -166,13 +165,12 @@ Meteor.methods({
                     }
                 }).count());
                 
-/*
                 Veiculos.remove({
                     linha: linha_cod,
                     updated_at: {
                         $lt: dmin.toLocaleTimeString()
                     }
-                });*/
+                });
 
             });
 
